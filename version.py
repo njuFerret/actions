@@ -1,7 +1,7 @@
 import pathlib
 
 root = pathlib.Path(__file__).parent
-version_file = root / "version.txt"
+version_file = root / "libraries_version.txt"
 version_folder = root.joinpath("versions")
 version_folder.mkdir(exist_ok=True, parents=True)
 
