@@ -53,7 +53,6 @@ jobs:
           # - ubuntu-22.04
           - windows-2022
 
-
     uses: ./.github/workflows/build_openssl.yml
     with:
       openssl-version: ${{ needs.get-versions.outputs.openssl-version }}
