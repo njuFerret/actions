@@ -22,6 +22,7 @@ jobs:
       - name: generate version files
         run: |
           python3 ./version.py
+          ls -l versions
           
       - name: get versions
         id: get-versions
