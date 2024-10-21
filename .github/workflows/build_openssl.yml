@@ -14,7 +14,8 @@ jobs:
     outputs:
       # release-version: ${{ steps.validate-tag.outputs.release-version }}
       llvm-version: ${{ steps.get-versions.outputs.llvm-version }}
-      mingw-version: ${{ steps.get-versions.outputs.llvm-version }}
+      mingw-version: ${{ steps.get-versions.outputs.ming-version }}
+      openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
     steps:
       - name: Checkout libraries version files
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -28,8 +29,8 @@ jobs:
         run: |
           echo "llvm-version=$(cat versions/llvm)" >> $GITHUB_OUTPUT
           echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
-          # echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
-          cat versions/mingw
+          echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
+          
           
   # echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
   # release_version=$(echo "${{ github.ref_name }}" | sed 's/llvmorg-//g')
@@ -44,7 +45,7 @@ jobs:
         run: |
           echo "llvm-version=${{ needs.get-versions.outputs.llvm-version }}"
           echo "mingw-version=${{ needs.get-versions.outputs.mingw-version }}"
-          # echo "openssl-version=${{ needs.get-versions.outputs.openssl-version }}"
+          echo "openssl-version=${{ needs.get-versions.outputs.openssl-version }}"
 
 
 
