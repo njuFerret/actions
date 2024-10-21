@@ -29,7 +29,7 @@ on:
     inputs:
       openssl-version:
         description: 'Openssl Build Version'
-        required: false
+        required: true
         type: string
       mingw:
         description: 'mingw Version'
@@ -53,7 +53,7 @@ jobs:
     name: build openssl
     runs-on: ${{ inputs.runs-on }}
     # i f: github.repository == 'llvm/llvm-project'
-    outputs:
+    # outputs:
       # release-version: ${{ steps.vars.outputs.release-version }}
       # ref: ${{ steps.vars.outputs.ref }}
       # upload: ${{ steps.vars.outputs.upload }}

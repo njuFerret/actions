@@ -46,12 +46,13 @@ jobs:
     name: Build Dependencies
     needs:
       - get-versions
+      - check-versions
     strategy:
       fail-fast: false
       matrix:
         runs-on:
-          # - ubuntu-22.04
           - windows-2022
+           
 
     uses: ./.github/workflows/build_openssl.yml
     with:
@@ -59,6 +60,8 @@ jobs:
       mingw: ${{ needs.get-versions.outputs.mingw-version }}
       upload: true
       runs-on: ${{ matrix.runs-on }}
+    
+    
     # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.
     # secrets:
     #   RELEASE_TASKS_USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
