@@ -1,0 +1,101 @@
+name: build Task
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  get-versions:
+    name: get libraries versions
+    runs-on: ubuntu-latest
+    outputs:
+      # release-version: ${{ steps.validate-tag.outputs.release-version }}
+      llvm-version: ${{ steps.get-versions.outputs.llvm-version }}
+      mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
+      openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
+    steps:
+      - name: Checkout libraries version files
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: generate version files
+        run: |
+          python3 ./version.py
+          ls -l versions
+          
+      - name: get versions
+        id: get-versions
+        run: |
+          echo "llvm-version=$(cat versions/llvm)" >> $GITHUB_OUTPUT
+          echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
+          echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
+          
+          
+  # echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
+  # release_version=$(echo "${{ github.ref_name }}" | sed 's/llvmorg-//g')
+  # echo "release-version=$release_version" >> "$GITHUB_OUTPUT"
+
+  check-tag:
+    name: Check Tag
+    runs-on: ubuntu-latest
+    needs: get-versions
+    steps:
+      - name: Check Tag
+        run: |
+          echo "llvm-version=${{ needs.get-versions.outputs.llvm-version }}"
+          echo "mingw-version=${{ needs.get-versions.outputs.mingw-version }}"
+          echo "openssl-version=${{ needs.get-versions.outputs.openssl-version }}"
+
+
+
+
+  # release-create:
+  #   name: Create a New Release
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write # For creating the release.
+  #   needs: validate-tag
+
+  #   steps:
+  #     - name: Install Dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install python3-github
+
+  #     - name: Checkout LLVM
+  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+  #     - name: Create Release
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #         USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
+  #       run: |
+  #         ./llvm/utils/release/./github-upload-release.py --token "$GITHUB_TOKEN" --release ${{ needs.validate-tag.outputs.release-version }} --user ${{ github.actor }} --user-token "$USER_TOKEN" create
+ 
+  # release-binaries:
+  #   name: Build Release Binaries
+  #   permissions:
+  #     contents: write
+  #     id-token: write
+  #     attestations: write
+  #   needs:
+  #     - validate-tag
+  #     - release-create
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       runs-on:
+  #         - ubuntu-22.04
+  #         - windows-2022
+  #         - macos-13
+  #         - macos-14
+
+  #   uses: ./.github/workflows/release-binaries.yml
+  #   with:
+  #     release-version: ${{ needs.validate-tag.outputs.release-version }}
+  #     upload: true
+  #     runs-on: ${{ matrix.runs-on }}
+  #   # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.
+  #   secrets:
+  #     RELEASE_TASKS_USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
