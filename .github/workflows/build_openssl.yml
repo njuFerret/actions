@@ -11,7 +11,6 @@ jobs:
   get-versions:
     name: get libraries versions
     runs-on: ubuntu-latest
-    # if: github.repository == 'llvm/llvm-project'
     outputs:
       # release-version: ${{ steps.validate-tag.outputs.release-version }}
       llvm-version: ${{ steps.get-versions.outputs.llvm-version }}
