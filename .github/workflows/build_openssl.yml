@@ -29,6 +29,7 @@ jobs:
           echo "llvm-version=$(cat versions/llvm)" >> $GITHUB_OUTPUT
           echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
           # echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
+          cat versions/mingw
           
   # echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
   # release_version=$(echo "${{ github.ref_name }}" | sed 's/llvmorg-//g')
