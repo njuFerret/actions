@@ -64,10 +64,11 @@ jobs:
       # release-binary-filename: ${{ steps.vars.outputs.release-binary-filename }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: check out openssl
+        uses: actions/checkout@v4
         with:
           repository: 'openssl/openssl'
-            tag: 'openssl-${{ inputs.openssl-version }}'
+          ref: 'openssl-${{ inputs.openssl-version }}'
 
       - uses: msys2/setup-msys2@v2
         with:
