@@ -14,7 +14,7 @@ jobs:
     outputs:
       # release-version: ${{ steps.validate-tag.outputs.release-version }}
       llvm-version: ${{ steps.get-versions.outputs.llvm-version }}
-      mingw-version: ${{ steps.get-versions.outputs.ming-version }}
+      mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
       openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
     steps:
       - name: Checkout libraries version files
