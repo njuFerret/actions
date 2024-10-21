@@ -1,101 +1,152 @@
 name: build openssl Task
 
-permissions:
-  contents: read
-
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      openssl-version:
+        description: 'Openssl Build Version'
+        required: true
+        type: string
+      mingw:
+        description: 'mingw Version'
+        required: true
+        type: string            
+      upload:
+        description: 'Upload binaries to the release page'
+        required: true
+        default: false
+        type: boolean
+      runs-on:
+        description: "Runner to use for the build"
+        required: true
+        type: choice
+        options:
+          - ubuntu-22.04
+          - windows-2022
+  
 
+  workflow_call:
+    inputs:
+      openssl-version:
+        description: 'Openssl Build Version'
+        required: false
+        type: string
+      mingw:
+        description: 'mingw Version'
+        required: true
+        type: string             
+      upload:
+        description: 'Upload binaries to the release page'
+        required: true
+        default: false
+        type: boolean
+      runs-on:
+        description: "Runner to use for the build"
+        required: true
+        type: string
+    # secrets:
+    #   RELEASE_TASKS_USER_TOKEN:
+    #     description: "Secret used to check user permissions."
+    #     required: false
 jobs:
-  get-versions:
-    name: get libraries versions
-    runs-on: ubuntu-latest
+  prepare:
+    name: build openssl
+    runs-on: ${{ inputs.runs-on }}
+    # i f: github.repository == 'llvm/llvm-project'
     outputs:
-      # release-version: ${{ steps.validate-tag.outputs.release-version }}
-      llvm-version: ${{ steps.get-versions.outputs.llvm-version }}
-      mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
-      openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
+      # release-version: ${{ steps.vars.outputs.release-version }}
+      # ref: ${{ steps.vars.outputs.ref }}
+      # upload: ${{ steps.vars.outputs.upload }}
+      # target-cmake-flags: ${{ steps.vars.outputs.target-cmake-flags }}
+      # build-flang: ${{ steps.vars.outputs.build-flang }}
+      # enable-pgo: ${{ steps.vars.outputs.enable-pgo }}
+      # release-binary-basename: ${{ steps.vars.outputs.release-binary-basename }}
+      # release-binary-filename: ${{ steps.vars.outputs.release-binary-filename }}
+
     steps:
-      - name: Checkout libraries version files
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: generate version files
-        run: |
-          python3 ./version.py
-          ls -l versions
-          
-      - name: get versions
-        id: get-versions
-        run: |
-          echo "llvm-version=$(cat versions/llvm)" >> $GITHUB_OUTPUT
-          echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
-          echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
-          
-          
-  # echo "${{ github.ref_name }}" | grep -e '^llvmorg-[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc[0-9]\+\)\?$'
-  # release_version=$(echo "${{ github.ref_name }}" | sed 's/llvmorg-//g')
-  # echo "release-version=$release_version" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: 'openssl/openssl'
+            tag: 'openssl-${{ inputs.openssl-version }}'
 
-  check-tag:
-    name: Check Tag
-    runs-on: ubuntu-latest
-    needs: get-versions
-    steps:
-      - name: Check Tag
-        run: |
-          echo "llvm-version=${{ needs.get-versions.outputs.llvm-version }}"
-          echo "mingw-version=${{ needs.get-versions.outputs.mingw-version }}"
-          echo "openssl-version=${{ needs.get-versions.outputs.openssl-version }}"
+      - uses: msys2/setup-msys2@v2
+        with:
+          update: true
 
+    # - name: Checkout LLVM
+    #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
+    # - name: Install Dependencies
+    #   shell: bash
+    #   run: |
+    #     pip install --require-hashes -r ./llvm/utils/git/requirements.txt
 
+    # - name: Check Permissions
+    #   i f: github.event_name != 'pull_request'
+    #   env:
+    #     GITHUB_TOKEN: ${{ github.token }}
+    #     USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
+    #   shell: bash
+    #   run: |
+    #     ./llvm/utils/release/./github-upload-release.py --token "$GITHUB_TOKEN" --user ${{ github.actor }} --user-token "$USER_TOKEN" check-permissions
 
-  # release-create:
-  #   name: Create a New Release
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write # For creating the release.
-  #   needs: validate-tag
+    # - name: Collect Variables
+    #   id: vars
+    #   shell: bash
+    #   # In order for the test-release.sh script to run correctly, the LLVM
+    #   # source needs to be at the following location relative to the build dir:
+    #   # | X.Y.Z-rcN | ./rcN/llvm-project
+    #   # | X.Y.Z     | ./final/llvm-project
+    #   #
+    #   # We also need to set divergent flags based on the release version:
+    #   # | X.Y.Z-rcN | -rc N -test-asserts
+    #   # | X.Y.Z     | -final
+    #   run: |
+    #     trimmed=$(echo ${{ inputs.release-version }} | xargs)
+    #     if [ -n "$trimmed" ]; then
+    #       release_version="$trimmed"
+    #       ref="llvmorg-$release_version"
+    #     else
+    #       release_version="${{ (github.event_name == 'pull_request' && format('PR{0}', github.event.pull_request.number)) || 'CI'}}-${{ github.sha }}"
+    #       ref=${{ github.sha }}
+    #     fi
+    #     if [ -n "${{ inputs.upload }}" ]; then
+    #       upload="${{ inputs.upload }}"
+    #     else
+    #       upload="false"
+    #     fi
+    #     echo "release-version=$release_version">> $GITHUB_OUTPUT
+    #     echo "ref=$ref" >> $GITHUB_OUTPUT
+    #     echo "upload=$upload" >> $GITHUB_OUTPUT
 
-  #   steps:
-  #     - name: Install Dependencies
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install python3-github
+    #     release_binary_basename="LLVM-$release_version-${{ runner.os }}-${{ runner.arch }}"
+    #     echo "release-binary-basename=$release_binary_basename" >> $GITHUB_OUTPUT
+    #     echo "release-binary-filename=$release_binary_basename.tar.xz" >> $GITHUB_OUTPUT
 
-  #     - name: Checkout LLVM
-  #       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+    #     # Detect necessary CMake flags
+    #     target="${{ runner.os }}-${{ runner.arch }}"
+    #     echo "enable-pgo=false" >> $GITHUB_OUTPUT
+    #     target_cmake_flags="-DLLVM_RELEASE_ENABLE_PGO=OFF"
+    #     # The macOS builds try to cross compile some libraries so we need to
+    #     # add extra CMake args to disable them.
+    #     # See https://github.com/llvm/llvm-project/issues/99767
+    #     if [ "${{ runner.os }}" = "macOS" ]; then
+    #       target_cmake_flags="$target_cmake_flags -DBOOTSTRAP_COMPILER_RT_ENABLE_IOS=OFF"
+    #       if [ "${{ runner.arch }}" = "ARM64" ]; then
+    #         arches=arm64
+    #       else
+    #         arches=x86_64
+    #       fi
+    #       target_cmake_flags="$target_cmake_flags -DBOOTSTRAP_DARWIN_osx_ARCHS=$arches -DBOOTSTRAP_DARWIN_osx_BUILTIN_ARCHS=$arches"
+    #     fi
 
-  #     - name: Create Release
-  #       env:
-  #         GITHUB_TOKEN: ${{ github.token }}
-  #         USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
-  #       run: |
-  #         ./llvm/utils/release/./github-upload-release.py --token "$GITHUB_TOKEN" --release ${{ needs.validate-tag.outputs.release-version }} --user ${{ github.actor }} --user-token "$USER_TOKEN" create
- 
-  # release-binaries:
-  #   name: Build Release Binaries
-  #   permissions:
-  #     contents: write
-  #     id-token: write
-  #     attestations: write
-  #   needs:
-  #     - validate-tag
-  #     - release-create
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       runs-on:
-  #         - ubuntu-22.04
-  #         - windows-2022
-  #         - macos-13
-  #         - macos-14
+    #     build_flang="true"
 
-  #   uses: ./.github/workflows/release-binaries.yml
-  #   with:
-  #     release-version: ${{ needs.validate-tag.outputs.release-version }}
-  #     upload: true
-  #     runs-on: ${{ matrix.runs-on }}
-  #   # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.
-  #   secrets:
-  #     RELEASE_TASKS_USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
+    #     if [ "${{ runner.os }}" = "Windows" ]; then
+    #       # The build times out on Windows, so we need to disable LTO.
+    #       target_cmake_flags="$target_cmake_flags -DLLVM_RELEASE_ENABLE_LTO=OFF"
+    #     fi
+
+    #     echo "target-cmake-flags=$target_cmake_flags" >> $GITHUB_OUTPUT
+    #     echo "build-flang=$build_flang" >> $GITHUB_OUTPUT
+
