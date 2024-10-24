@@ -8,8 +8,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  get-versions:
-    name: get libraries versions
+  config_and_build:
+    name: Config libraries and build
     runs-on: ubuntu-latest
     outputs:
       # release-version: ${{ steps.validate-tag.outputs.release-version }}
@@ -17,12 +17,13 @@ jobs:
       mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
       openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
       qt-version: ${{ steps.get-versions.outputs.qt-version }}
+      build-data: ${{ steps.date.outputs.date }}
     steps:
-      - name: Checkout library version files
+      - name: generate library version files
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: generate version files
         run: |
-          python3 ./version.py
+          python3 ./utils/version.py
           ls -l versions
           
       - name: get versions
@@ -32,6 +33,11 @@ jobs:
           echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
           echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
           echo "qt-version=$(cat versions/qt)" >> $GITHUB_OUTPUT
+
+      - name: get build date      
+        id: date        
+        run: |  
+           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
   check-versions:
     name: Check versions
@@ -62,8 +68,10 @@ jobs:
       openssl-version: ${{ needs.get-versions.outputs.openssl-version }}
       mingw: ${{ needs.get-versions.outputs.mingw-version }}
       qt-version: ${{ needs.get-versions.outputs.qt-version }}
+      build-date: ${{ needs.date.outputs.date }}
       upload: true
       runs-on: ${{ matrix.runs-on }}
+      
     
     
     # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.

@@ -1,11 +1,13 @@
 import pathlib
 
-root = pathlib.Path(__file__).parent
-version_file = root / "libraries_version.txt"
-version_folder = root.joinpath("versions")
+base_dir = pathlib.Path(__file__).parent
+version_file = base_dir.parent / "libraries_version.txt"
+version_folder = base_dir.parent.joinpath("versions")
 version_folder.mkdir(exist_ok=True, parents=True)
 
 for l in version_file.open("r", encoding='utf-8').readlines():
+    if l.startswith("#") or l.strip() == "":
+        continue
     lib, version = l.strip().split("=")
     lib = lib.strip()
     version = version.strip()
