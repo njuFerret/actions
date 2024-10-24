@@ -89,11 +89,16 @@ jobs:
       #     msystem: UCRT64
       #     update: false
 
+  test:
+    name: test
+    needs: build
+    runs-on: ${{ inputs.runs-on }}
+    steps:
       - name: Test 
         shell: cmd
         run: |
           echo "llvm-version=${{ inputs.llvm-version }}"
-          echo "build mode = ${{ steps.mode.ouputs.build-mode}}"
+          echo "build mode = ${{ needs.build.ouputs.build-mode}}"
 
 
       # - shell: cmd
