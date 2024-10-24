@@ -37,7 +37,7 @@ jobs:
       - name: get build date      
         id: date        
         run: |  
-           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+           echo "build-date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
   check-versions:
     name: Check versions
@@ -50,7 +50,7 @@ jobs:
           echo "mingw-version=${{ needs.versions_config.outputs.mingw-version }}"
           echo "openssl-version=${{ needs.versions_config.outputs.openssl-version }}"
           echo "qt-version=${{ needs.versions_config.outputs.qt-version }}"
-          echo "date=${{ needs.versions_config.outputs.date }}"
+          echo "date=${{ needs.versions_config.outputs.build-date }}"
 
   build-deps:
     name: Build Dependencies
