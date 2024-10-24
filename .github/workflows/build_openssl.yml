@@ -161,7 +161,9 @@ jobs:
       - name: Unzip openssl
         shell: bash
         run: |
-          ls -l       
+          ls -l   
+          mv openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.7z openssl.zip    
+          ls -l
           7z x openssl.zip          
           ls -l
           mv *.7z ../
