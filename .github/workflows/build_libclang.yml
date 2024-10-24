@@ -92,7 +92,8 @@ jobs:
       - name: Test 
         shell: cmd
         run: |
-          echo "llvm-version=${{ needs.versions_config.outputs.llvm-version }}"
+          echo "llvm-version=${{ inputs.llvm-version }}"
+          echo "build mode = ${{ steps.ouputs.build-mode}}"
 
 
       # - shell: cmd
