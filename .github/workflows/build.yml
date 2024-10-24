@@ -69,7 +69,7 @@ jobs:
       openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
       mingw: ${{ needs.versions_config.outputs.mingw-version }}
       qt-version: ${{ needs.versions_config.outputs.qt-version }}
-      build-date: ${{ needs.date.outputs.date }}
+      build-date: ${{ needs.versions_config.outputs.build-date }}
       upload: true
       runs-on: ${{ matrix.runs-on }}
       
