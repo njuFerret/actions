@@ -137,12 +137,13 @@ jobs:
         shell: cmd
         run: |
           7z a openssl-${{ inputs.openssl-version }}_${{ inputs.mingw-version }}.7z D:\Dev\Qt\${{ inputs.qt-version }}\3rdParty\openssl
+          dir
 
       - name: upload openssl ver ${{ inputs.openssl-version }}  build
         uses:  actions/upload-artifact@v4.4.3
         with:
           name: 'openssl.zip'
-          path: openssl-${{ inputs.openssl-version }}_${{ inputs.mingw-version }}.7z
+          path: ./openssl-${{ inputs.openssl-version }}_${{ inputs.mingw-version }}.7z
 
 
   release:
