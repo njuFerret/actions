@@ -16,6 +16,7 @@ jobs:
       llvm-version: ${{ steps.get-versions.outputs.llvm-version }}
       mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
       openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
+      qt-version: ${{ steps.get-versions.outputs.qt-version }}
     steps:
       - name: Checkout library version files
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -30,6 +31,7 @@ jobs:
           echo "llvm-version=$(cat versions/llvm)" >> $GITHUB_OUTPUT
           echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
           echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
+          echo "qt-version=$(cat versions/qt)" >> $GITHUB_OUTPUT
 
   check-versions:
     name: Check versions
@@ -41,6 +43,7 @@ jobs:
           echo "llvm-version=${{ needs.get-versions.outputs.llvm-version }}"
           echo "mingw-version=${{ needs.get-versions.outputs.mingw-version }}"
           echo "openssl-version=${{ needs.get-versions.outputs.openssl-version }}"
+          echo "qt-version=${{ needs.get-versions.outputs.qt-version }}"
 
   build-deps:
     name: Build Dependencies
@@ -58,6 +61,7 @@ jobs:
     with:
       openssl-version: ${{ needs.get-versions.outputs.openssl-version }}
       mingw: ${{ needs.get-versions.outputs.mingw-version }}
+      qt-version: ${{ needs.get-versions.outputs.qt-version }}
       upload: true
       runs-on: ${{ matrix.runs-on }}
     

@@ -1,3 +1,4 @@
 llvm=19.1.2
 mingw=MinGW-x86_64-13.1.0-release-posix-seh-ucrt-rt_v11-rev1
 openssl=3.3.2
+qt=6.8.0
