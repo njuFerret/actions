@@ -150,18 +150,19 @@ jobs:
       needs: [build]
 
       steps:
-      - name: Download artifact
+      - name: Download openssl
         uses: actions/download-artifact@v4
         with:          
           name: 'openssl.zip'          
           # merge-multiple: true
           path: ./
 
-      - name: Unzip
+      - name: Unzip openssl
         shell: bash
         run: |
           ls -l
-          unzip openssl.zip
+          apt install p7zip -y
+          7z x openssl.zip
           cd openssl
           ls -l
           mv *.7z ../
