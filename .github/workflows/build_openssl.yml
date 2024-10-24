@@ -147,32 +147,35 @@ jobs:
 
 
   release:
-      runs-on: ubuntu-latest
-      needs: [build]
+    permissions:
+      contents: write
+  
+    runs-on: ubuntu-latest
+    needs: [build]
 
-      steps:
-      - name: Download openssl
-        uses: actions/download-artifact@v4
-        with:          
-          name: 'openssl.zip'          
-          # merge-multiple: true
-          path: ./
+    steps:
+    - name: Download openssl
+      uses: actions/download-artifact@v4
+      with:          
+        name: 'openssl.zip'          
+        # merge-multiple: true
+        path: ./
 
-      - name: Unzip openssl
-        shell: bash
-        run: |
-          ls -l   
-          7z x openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.7z
-          ls -l
-          ls -l openssl 
+    - name: Unzip openssl
+      shell: bash
+      run: |
+        ls -l   
+        7z x openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.7z
+        ls -l
+        ls -l openssl 
 
 
-      - name: Upload to Release
-        id: upload_to_release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: "*.7z"
-          tag_name: build_${{ inputs.build-date }}
+    - name: Upload to Release
+      id: upload_to_release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: "*.7z"
+        tag_name: build_${{ inputs.build-date }}
 
 
 
