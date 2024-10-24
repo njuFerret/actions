@@ -93,7 +93,7 @@ jobs:
         shell: cmd
         run: |
           echo "llvm-version=${{ inputs.llvm-version }}"
-          echo "build mode = ${{ steps.ouputs.build-mode}}"
+          echo "build mode = ${{ steps.mode.ouputs.build-mode}}"
 
 
       # - shell: cmd
