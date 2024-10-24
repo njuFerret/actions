@@ -50,7 +50,7 @@ jobs:
           echo "mingw-version=${{ needs.versions_config.outputs.mingw-version }}"
           echo "openssl-version=${{ needs.versions_config.outputs.openssl-version }}"
           echo "qt-version=${{ needs.versions_config.outputs.qt-version }}"
-          echo "date=${{ needs.versions_config.outputs.build-date }}"
+          echo "build-date=${{ needs.versions_config.outputs.build-date }}"
 
   build-deps:
     name: Build Dependencies
