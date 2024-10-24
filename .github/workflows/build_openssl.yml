@@ -133,12 +133,25 @@ jobs:
           # 尼玛, 安装文档会出错！！！！
           mingw32-make install_sw install_ssldirs -j
           export doc=$QT_ROOT/3rdParty/openssl/openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
-          echo build info: > doc
-          echo "" >> doc
-          echo "    build date: ${{ inputs.build-date }}" >> doc
-          echo "    openssl version: ${{ inputs.openssl-version }}" >> doc
-          echo "    mingw version: ${{ inputs.mingw }}" >> doc        
-          echo "" >> doc
+          echo "" >> $doc
+          echo openssl v${{ inputs.openssl-version }} build info: > $doc
+          echo "" >> $doc
+          echo "    build date: ${{ inputs.build-date }}" >> $doc
+          echo "    openssl version: ${{ inputs.openssl-version }}" >> $doc
+          echo "    mingw version: ${{ inputs.mingw }}" >> $doc        
+          echo "" >> $doc
+          echo "build env:   MinGW64 + MSYS2 + Windows " >> $doc
+          echo "" >> $doc
+          echo "build cmd:" >> $doc
+          echo "    ./config --prefix=$QT_ROOT/3rdParty/openssl" >> $doc
+          echo "    sed -i \"s|$(pwd)/||g\" Makefile ">> $doc
+          echo "    mingw32-make -j " >> $doc
+          echo "    # do NOT install doc" >> $doc
+          echo "    mingw32-make install_sw install_ssldirs -j" >> $doc
+          echo "" >> $doc
+          
+
+
         
           
       - name: 7ziped openssl folder
