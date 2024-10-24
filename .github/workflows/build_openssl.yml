@@ -160,10 +160,8 @@ jobs:
       - name: Unzip openssl
         shell: bash
         run: |
-          ls -l
-          sudo apt install p7zip -y
-          7z x openssl.zip
-          cd openssl
+          ls -l       
+          7z x openssl.zip          
           ls -l
           mv *.7z ../
 
