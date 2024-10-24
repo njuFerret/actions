@@ -119,19 +119,19 @@ jobs:
         run: |
           # g++ -v        
           echo QT_ROOT=$QT_ROOT  
-          # cd openssl 
-          # # ls -l          
-          # ./config --prefix=$QT_ROOT/3rdParty/openssl          
-          # echo ---------------------patch Makefile------------------
-          # # 注意！注意！注意！
-          # # 此处修改 Makefile 文件中 00-base-templates.conf 的绝对路径为相对路径，
-          # # /d/path1/path2/Configurations/00-base-templates.conf => Configurations/00-base-templates.conf
-          # sed -i "s|$(pwd)/||g" Makefile
-          # echo ------------------------ compile openssl -------------------
-          # mingw32-make -j
-          # echo ------------------- install openssl without docs-------------------
-          # # 尼玛, 安装文档会出错！！！！
-          # mingw32-make install_sw install_ssldirs -j
+          cd openssl 
+          # ls -l          
+          ./config --prefix=$QT_ROOT/3rdParty/openssl          
+          echo ---------------------patch Makefile------------------
+          # 注意！注意！注意！
+          # 此处修改 Makefile 文件中 00-base-templates.conf 的绝对路径为相对路径，
+          # /d/path1/path2/Configurations/00-base-templates.conf => Configurations/00-base-templates.conf
+          sed -i "s|$(pwd)/||g" Makefile
+          echo ------------------------ compile openssl -------------------
+          mingw32-make -j
+          echo ------------------- install openssl without docs-------------------
+          # 尼玛, 安装文档会出错！！！！
+          mingw32-make install_sw install_ssldirs -j
           
       - name: 7ziped openssl folder
         shell: cmd
@@ -142,7 +142,7 @@ jobs:
       - name: upload openssl-${{ inputs.openssl-version }} binaries
         uses:  actions/upload-artifact@v4.4.3
         with:
-          name: 'openssl.zip'
+          name: 'openssl'
           path: ./openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.7z
 
 
@@ -157,7 +157,7 @@ jobs:
     - name: Download openssl
       uses: actions/download-artifact@v4
       with:          
-        name: 'openssl.zip'          
+        name: 'openssl'          
         # merge-multiple: true
         path: ./
 
@@ -178,81 +178,4 @@ jobs:
         tag_name: build_${{ inputs.build-date }}
 
 
-
-    # - name: Checkout LLVM
-    #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-    # - name: Install Dependencies
-    #   shell: bash
-    #   run: |
-    #     pip install --require-hashes -r ./llvm/utils/git/requirements.txt
-
-    # - name: Check Permissions
-    #   i f: github.event_name != 'pull_request'
-    #   env:
-    #     GITHUB_TOKEN: ${{ github.token }}
-    #     USER_TOKEN: ${{ secrets.RELEASE_TASKS_USER_TOKEN }}
-    #   shell: bash
-    #   run: |
-    #     ./llvm/utils/release/./github-upload-release.py --token "$GITHUB_TOKEN" --user ${{ github.actor }} --user-token "$USER_TOKEN" check-permissions
-
-    # - name: Collect Variables
-    #   id: vars
-    #   shell: bash
-    #   # In order for the test-release.sh script to run correctly, the LLVM
-    #   # source needs to be at the following location relative to the build dir:
-    #   # | X.Y.Z-rcN | ./rcN/llvm-project
-    #   # | X.Y.Z     | ./final/llvm-project
-    #   #
-    #   # We also need to set divergent flags based on the release version:
-    #   # | X.Y.Z-rcN | -rc N -test-asserts
-    #   # | X.Y.Z     | -final
-    #   run: |
-    #     trimmed=$(echo ${{ inputs.release-version }} | xargs)
-    #     if [ -n "$trimmed" ]; then
-    #       release_version="$trimmed"
-    #       ref="llvmorg-$release_version"
-    #     else
-    #       release_version="${{ (github.event_name == 'pull_request' && format('PR{0}', github.event.pull_request.number)) || 'CI'}}-${{ github.sha }}"
-    #       ref=${{ github.sha }}
-    #     fi
-    #     if [ -n "${{ inputs.upload }}" ]; then
-    #       upload="${{ inputs.upload }}"
-    #     else
-    #       upload="false"
-    #     fi
-    #     echo "release-version=$release_version">> $GITHUB_OUTPUT
-    #     echo "ref=$ref" >> $GITHUB_OUTPUT
-    #     echo "upload=$upload" >> $GITHUB_OUTPUT
-
-    #     release_binary_basename="LLVM-$release_version-${{ runner.os }}-${{ runner.arch }}"
-    #     echo "release-binary-basename=$release_binary_basename" >> $GITHUB_OUTPUT
-    #     echo "release-binary-filename=$release_binary_basename.tar.xz" >> $GITHUB_OUTPUT
-
-    #     # Detect necessary CMake flags
-    #     target="${{ runner.os }}-${{ runner.arch }}"
-    #     echo "enable-pgo=false" >> $GITHUB_OUTPUT
-    #     target_cmake_flags="-DLLVM_RELEASE_ENABLE_PGO=OFF"
-    #     # The macOS builds try to cross compile some libraries so we need to
-    #     # add extra CMake args to disable them.
-    #     # See https://github.com/llvm/llvm-project/issues/99767
-    #     if [ "${{ runner.os }}" = "macOS" ]; then
-    #       target_cmake_flags="$target_cmake_flags -DBOOTSTRAP_COMPILER_RT_ENABLE_IOS=OFF"
-    #       if [ "${{ runner.arch }}" = "ARM64" ]; then
-    #         arches=arm64
-    #       else
-    #         arches=x86_64
-    #       fi
-    #       target_cmake_flags="$target_cmake_flags -DBOOTSTRAP_DARWIN_osx_ARCHS=$arches -DBOOTSTRAP_DARWIN_osx_BUILTIN_ARCHS=$arches"
-    #     fi
-
-    #     build_flang="true"
-
-    #     if [ "${{ runner.os }}" = "Windows" ]; then
-    #       # The build times out on Windows, so we need to disable LTO.
-    #       target_cmake_flags="$target_cmake_flags -DLLVM_RELEASE_ENABLE_LTO=OFF"
-    #     fi
-
-    #     echo "target-cmake-flags=$target_cmake_flags" >> $GITHUB_OUTPUT
-    #     echo "build-flang=$build_flang" >> $GITHUB_OUTPUT
 
