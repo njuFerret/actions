@@ -17,7 +17,7 @@ jobs:
       mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
       openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
       qt-version: ${{ steps.get-versions.outputs.qt-version }}
-      build-date: ${{ steps.date.outputs.date }}
+      build-date: ${{ steps.date.outputs.build-date }}
     steps:
       - name: generate library version files
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -35,7 +35,7 @@ jobs:
           echo "qt-version=$(cat versions/qt)" >> $GITHUB_OUTPUT
 
       - name: get build date      
-        id: date        
+        id: build-date        
         run: |  
            echo "build-date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
