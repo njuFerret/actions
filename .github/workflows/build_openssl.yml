@@ -132,12 +132,13 @@ jobs:
           echo ------------------- install openssl without docs-------------------
           # 尼玛, 安装文档会出错！！！！
           mingw32-make install_sw install_ssldirs -j
-          echo build info: > openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
-          echo "" >> openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
-          echo "    build date: ${{ inputs.build-date }}" >> openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
-          echo "    openssl version: ${{ inputs.openssl-version }}" >> openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
-          echo "    mingw version: ${{ inputs.mingw }}" >> openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt        
-          echo "" >> openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
+          export doc=$QT_ROOT/3rdParty/openssl/openssl-${{ inputs.openssl-version }}_${{ inputs.mingw }}.txt
+          echo build info: > doc
+          echo "" >> doc
+          echo "    build date: ${{ inputs.build-date }}" >> doc
+          echo "    openssl version: ${{ inputs.openssl-version }}" >> doc
+          echo "    mingw version: ${{ inputs.mingw }}" >> doc        
+          echo "" >> doc
         
           
       - name: 7ziped openssl folder
