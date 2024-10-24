@@ -133,12 +133,16 @@ jobs:
           # # 尼玛, 安装文档会出错！！！！
           # mingw32-make install_sw install_ssldirs -j
           
+      - name: 7ziped openssl folder
+        shell: cmd
+        run: |
+          7z a openssl-${{ inputs.openssl-version }}_${{ inputs.mingw-version }}.7z D:\Dev\Qt\${{ inputs.qt-version }}\3rdParty\openssl
 
       - name: upload openssl ver ${{ inputs.openssl-version }}  build
-        uses:  actions/upload-artifact@v4
+        uses:  actions/upload-artifact@v4.4.3
         with:
-          name: 'archives'
-          path: D:/Dev/Qt/${{ inputs.qt-version }}/3rdParty/openssl
+          name: 'openssl.zip'
+          path: openssl-${{ inputs.openssl-version }}_${{ inputs.mingw-version }}.7z
 
 
   release:
@@ -149,9 +153,18 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:          
-          name: 'archives'          
+          name: 'openssl.zip'          
           # merge-multiple: true
           path: ./
+
+      - name: Unzip
+        shell: bash
+        run: |
+          ls -l
+          unzip openssl.zip
+          cd openssl
+          ls -l
+          mv *.7z ../
 
       - name: Upload to Release
         id: upload_to_release
