@@ -161,7 +161,7 @@ jobs:
         shell: bash
         run: |
           ls -l
-          apt install p7zip -y
+          sudo apt install p7zip -y
           7z x openssl.zip
           cd openssl
           ls -l
