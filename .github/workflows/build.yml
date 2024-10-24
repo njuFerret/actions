@@ -35,7 +35,7 @@ jobs:
           echo "qt-version=$(cat versions/qt)" >> $GITHUB_OUTPUT
 
       - name: get build date      
-        id: build-date        
+        id: date        
         run: |  
            echo "build-date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
