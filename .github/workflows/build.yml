@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: generate version files
         run: |
-          python3 ./utils/version.py
+          python3 ./utils/libraries_version.py
           ls -l versions
           
       - name: get versions
