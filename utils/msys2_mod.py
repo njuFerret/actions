@@ -12,7 +12,7 @@ def add_path_env(content, pathes):
         pth.append(path)
 
     pth = [p for p in pth if p.strip()]
-    c = f'set PATH= {";".join(pth)}'
+    c = f'set PATH={";".join(pth)}'
     old = content.splitlines()
     new = old[:-1] + [c] + old[-1:]
     return "\n".join(new)
