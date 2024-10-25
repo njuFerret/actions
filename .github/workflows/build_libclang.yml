@@ -83,7 +83,7 @@ jobs:
       - name: build
         shell: cmd
         run: |
-          cmake -v
+          cmake --version
 
       # - name: Checkout llvm
       #   uses: actions/checkout@v4
