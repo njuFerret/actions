@@ -78,24 +78,24 @@ jobs:
         upload: true
         runs-on: ${{ matrix.runs-on }}
       
-  build-clang:     
-    name: Build clang
-    needs:
-      - versions_config
-      - check-versions
-    strategy:
-      fail-fast: false
-      matrix:
-        runs-on:
-          - windows-2022        
-        uses: ./.github/workflows/build_libclang.yml
-        with:
-          llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
-          mingw: ${{ needs.versions_config.outputs.mingw-version }}
-          install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
-          build-date: ${{ needs.versions_config.outputs.build-date }}
-          upload: true
-          runs-on: ${{ matrix.runs-on }}    
+  # build-clang:     
+  #   name: Build clang
+  #   needs:
+  #     - versions_config
+  #     - check-versions
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       runs-on:
+  #         - windows-2022        
+  #       uses: ./.github/workflows/build_libclang.yml
+  #       with:
+  #         llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
+  #         mingw: ${{ needs.versions_config.outputs.mingw-version }}
+  #         install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
+  #         build-date: ${{ needs.versions_config.outputs.build-date }}
+  #         upload: true
+  #         runs-on: ${{ matrix.runs-on }}    
     
     # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.
     # secrets:
