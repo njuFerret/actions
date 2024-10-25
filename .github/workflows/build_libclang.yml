@@ -177,7 +177,7 @@ jobs:
           cmake --build build --parallel --target install  
 
 
-          MKDIR ${{ install-prefix }}\libclang
+          MKDIR ${{ inputs.install-prefix }}\libclang
           echo. >  %CLANG_INSTALL_DIR%\%build_name%.txt
           echo   ********************** libclang ver. %_llvm_ver% **************************** >>  %CLANG_INSTALL_DIR%\%build_name%.txt
           echo. >>  %CLANG_INSTALL_DIR%\%build_name%.txt
