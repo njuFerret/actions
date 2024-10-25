@@ -48,6 +48,7 @@ def modify_msys_cmd_file(msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD'):
     content = msys_cmd_file.open('r', encoding='utf-8').read().replace('minimal', "inherit").strip()
 
     content = add_path_env(content, pathes)
+    print(qt_install_prefix)
     qt_install_prefix = winpath_2_msyspath(qt_install_prefix)
     content = add_path_qt(content, qt_install_prefix)
 

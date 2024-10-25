@@ -89,15 +89,10 @@ jobs:
 
     steps:
       - name: check out 
-        uses: actions/checkout@v4   
-
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: UCRT64          
-          update: false        
+        uses: actions/checkout@v4.1.1
 
       - name: Checkout openssl
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
         with:
           repository: 'openssl/openssl'
           ref: 'openssl-${{ inputs.openssl-version }}'
@@ -114,6 +109,7 @@ jobs:
            set mingw=${{ inputs.mingw }}
            set QT_INSTALL_PREFIX=${{ inputs.install-prefix }}\Qt\${{ inputs.qt-version }}
            set START=%CD%      
+           echo %QT_INSTALL_PREFIX%
            # 第一个参数为Qt版本, 第二个参数开始为路径如MinGW\bin
            python ./utils/msys2_mod.py %QT_INSTALL_PREFIX% %START%\MinGW\bin
            curl -L -o  %mingw%.7z  https://github.com/njuFerret/qt6_mingw_build/releases/download/deps/%mingw%.7z
