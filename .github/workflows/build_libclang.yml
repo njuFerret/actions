@@ -108,6 +108,10 @@ jobs:
           cmake --version
           echo -------------------- test ninja --------------------------
           ninja --version          
+          echo -------------------- test python --------------------------
+          python -V
+          echo -------------------- test perl --------------------------
+          perl --version                        
           echo -------------------- test git --------------------------
           git --version
           echo -------------------- test 7z --------------------------
@@ -140,7 +144,10 @@ jobs:
         run: |
           set PATH=%CD%\MinGW\bin;%CD%\ninja;%PATH%
           set START=%CD%
-          set CLANG_INSTALL_PREFIX=${{ inputs.install-prefix }}/libclang
+          set CLANG_INSTALL_PREFIX=${{ inputs.install-prefix }}\libclang
+          set build_name=libclang-${{ inputs.llvm-version }}-%mingw%_${{ matrix.buildmode}}
+          set build_doc=%CLANG_INSTALL_PREFIX%\%build_name%.txt
+
           @REM check toolsets
           echo -------------------- test mingw --------------------------
           g++ -v
@@ -157,9 +164,9 @@ jobs:
           git diff --stat
 
           if "${{matrix.buildmode}}"=="static" (
-            cmake -GNinja -DBUILD_SHARED_LIBS:BOOL=OFF -DLIBCLANG_BUILD_STATIC:BOOL=ON ^
+            cmake -GNinja -Wno-dev -Wno-deprecated -DBUILD_SHARED_LIBS:BOOL=OFF -DLIBCLANG_BUILD_STATIC:BOOL=ON ^
               -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra -DCMAKE_BUILD_TYPE=Release^
-              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -B./build
+              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build
           ) else if "${{matrix.buildmode}}"=="shared" (
             echo **********   turn off test module in  clang-tools-extra *****************    
             git apply fix_shared_build.patch
@@ -168,7 +175,7 @@ jobs:
             cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer ^
               -DBUILD_SHARED_LIBS:BOOL=ON -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
               -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra -DCMAKE_BUILD_TYPE=Release ^
-              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -B./build            
+              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build            
           )
 
           @REM : 编译
@@ -176,17 +183,18 @@ jobs:
           @REM : 安装
           cmake --build build --parallel --target install  
 
-
+          
           MKDIR ${{ inputs.install-prefix }}\libclang
-          echo. >  %CLANG_INSTALL_DIR%\%build_name%.txt
-          echo   ********************** libclang ver. %_llvm_ver% **************************** >>  %CLANG_INSTALL_DIR%\%build_name%.txt
-          echo. >>  %CLANG_INSTALL_DIR%\%build_name%.txt
-          echo   ********************** mingw version info **************************** >>  %CLANG_INSTALL_DIR%\%build_name%.txt
-          g++ -v >> %CLANG_INSTALL_DIR%\%build_name%.txt 2>&1
+          
+          echo. >  %build_doc%
+          echo   ********************** libclang ver. %_llvm_ver% **************************** >>  %build_doc%
+          echo. >>  %build_doc%
+          echo   ********************** mingw version info **************************** >>  %build_doc%
+          g++ -v >> %build_doc% 2>&1
 
           echo ********************** 打包 libclang  ****************************
           cd %START%
-          7z a libclang.7z %CLANG_INSTALL_DIR%
+          7z a libclang.7z %CLANG_INSTALL_PREFIX%
       # - name: Checkout openssl
       #   uses: actions/checkout@v4
       #   with:
