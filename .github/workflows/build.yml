@@ -57,8 +57,8 @@ jobs:
           # echo "cmake=${{ needs.versions_config.outputs.cmake-version }}"
           echo "build-date=${{ needs.versions_config.outputs.build-date }}"
 
-  build-deps:
-    name: Build Dependencies
+  build-openssl:
+    name: Build openssl
     needs:
       - versions_config
       - check-versions
@@ -66,21 +66,28 @@ jobs:
       fail-fast: false
       matrix:
         runs-on:
-          - windows-2022
-           
-    steps:     
-      - name: Openssl
-        uses: ./.github/workflows/build_openssl.yml
-        with:
-          openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
-          mingw: ${{ needs.versions_config.outputs.mingw-version }}
-          install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
-          build-date: ${{ needs.versions_config.outputs.build-date }}
-          qt-version: ${{ needs.versions_config.outputs.qt-version }}
-          upload: true
-          runs-on: ${{ matrix.runs-on }}
+          - windows-2022           
+
+      uses: ./.github/workflows/build_openssl.yml
+      with:
+        openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
+        mingw: ${{ needs.versions_config.outputs.mingw-version }}
+        install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
+        build-date: ${{ needs.versions_config.outputs.build-date }}
+        qt-version: ${{ needs.versions_config.outputs.qt-version }}
+        upload: true
+        runs-on: ${{ matrix.runs-on }}
       
-      - name: libclang      
+  build-clang:     
+    name: Build clang
+    needs:
+      - versions_config
+      - check-versions
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - windows-2022        
         uses: ./.github/workflows/build_libclang.yml
         with:
           llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
