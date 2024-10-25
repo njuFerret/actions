@@ -136,8 +136,8 @@ jobs:
           path: llvm-project
 
       - name: config environment and build
-      - shell: cmd
-      - run: |
+        shell: cmd
+        run: |
           set PATH=%CD%\MinGW\bin;%CD%\ninja;%PATH%
           set START=%CD%
           set CLANG_INSTALL_PREFIX=${{ install-prefix }}/libclang
