@@ -229,7 +229,7 @@ jobs:
         ls -l   
         7z x libclang-${{ inputs.llvm-version }}_${{ inputs.mingw }}_static.7z
         ls -l
-        ls -l openssl 
+        ls -l libclang 
 
 
     - name: Upload to Release
