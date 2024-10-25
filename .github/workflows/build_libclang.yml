@@ -140,7 +140,7 @@ jobs:
         run: |
           set PATH=%CD%\MinGW\bin;%CD%\ninja;%PATH%
           set START=%CD%
-          set CLANG_INSTALL_PREFIX=${{ install-prefix }}/libclang
+          set CLANG_INSTALL_PREFIX=${{ inputs.install-prefix }}/libclang
           @REM check toolsets
           echo -------------------- test mingw --------------------------
           g++ -v
