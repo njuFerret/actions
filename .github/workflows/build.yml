@@ -17,7 +17,7 @@ jobs:
       mingw-version: ${{ steps.get-versions.outputs.mingw-version }}
       openssl-version: ${{ steps.get-versions.outputs.openssl-version }}
       qt-version: ${{ steps.get-versions.outputs.qt-version }}
-      cmake-version: ${{ steps.get-versions.outputs.cmake-version }}
+      # cmake-version: ${{ steps.get-versions.outputs.cmake-version }}
       build-date: ${{ steps.date.outputs.build-date }}
     steps:
       - name: generate library version files
@@ -34,7 +34,7 @@ jobs:
           echo "mingw-version=$(cat versions/mingw)" >> $GITHUB_OUTPUT
           echo "openssl-version=$(cat versions/openssl)" >> $GITHUB_OUTPUT
           echo "qt-version=$(cat versions/qt)" >> $GITHUB_OUTPUT
-          echo "cmake-version=$(cat versions/cmake)" >> $GITHUB_OUTPUT
+          # echo "cmake-version=$(cat versions/cmake)" >> $GITHUB_OUTPUT
 
       - name: get build date      
         id: date        
@@ -52,7 +52,7 @@ jobs:
           echo "mingw-version=${{ needs.versions_config.outputs.mingw-version }}"
           echo "openssl-version=${{ needs.versions_config.outputs.openssl-version }}"
           echo "qt-version=${{ needs.versions_config.outputs.qt-version }}"
-          echo "cmake=${{ needs.versions_config.outputs.cmake-version }}"
+          # echo "cmake=${{ needs.versions_config.outputs.cmake-version }}"
           echo "build-date=${{ needs.versions_config.outputs.build-date }}"
 
   build-deps:

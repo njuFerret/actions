@@ -80,10 +80,15 @@ jobs:
       - name: check out 
         uses: actions/checkout@v4   
 
-      - name: build
+      - name: toolsets Test 
         shell: cmd
         run: |
+          echo -------------------- test cmake --------------------------
           cmake --version
+          echo -------------------- test ninja --------------------------
+          ninja --version
+          echo -------------------- test 7z --------------------------
+          7z 
 
       # - name: Checkout llvm
       #   uses: actions/checkout@v4
