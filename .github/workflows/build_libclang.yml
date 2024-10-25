@@ -188,7 +188,7 @@ jobs:
           MKDIR %CLANG_INSTALL_PREFIX%
           
           echo. >  %build_doc%
-          echo   ********************** libclang ver. %_llvm_ver% **************************** >>  %build_doc%
+          echo   ********************** libclang ver. ${{ inputs.llvm-version }} **************************** >>  %build_doc%
           echo. >>  %build_doc%
           echo   ********************** mingw version info **************************** >>  %build_doc%
           g++ -v >> %build_doc% 2>&1
