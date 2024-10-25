@@ -145,7 +145,7 @@ jobs:
           set PATH=%CD%\MinGW\bin;%CD%\ninja;%PATH%
           set START=%CD%
           set CLANG_INSTALL_PREFIX=${{ inputs.install-prefix }}\libclang
-          set build_name=libclang-${{ inputs.llvm-version }}_%mingw%_${{ matrix.buildmode}}.7z
+          set build_name=libclang-${{ inputs.llvm-version }}_${{ inputs.mingw }}_${{ matrix.buildmode}}
           set build_doc=%CLANG_INSTALL_PREFIX%\%build_name%.txt
 
           @REM check toolsets
@@ -204,7 +204,7 @@ jobs:
         uses:  actions/upload-artifact@v4.4.3
         with:
           name: 'build-${{ matrix.buildmode}}'
-          path: ./libclang-${{ inputs.llvm-version }}_%mingw%_${{ matrix.buildmode}}.7z
+          path: ./libclang-${{ inputs.llvm-version }}_${{ inputs.mingw }}_${{ matrix.buildmode}}.7z
 
 
   release:
