@@ -5,3 +5,4 @@ mingw=MinGW-x86_64-13.1.0-release-posix-seh-ucrt-rt_v11-rev1
 # openssl=3.3.2 
 openssl=3.4.0
 qt=6.8.0
+cmake=3.30.5

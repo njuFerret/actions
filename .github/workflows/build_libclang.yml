@@ -57,26 +57,39 @@ on:
     #     description: "Secret used to check user permissions."
     #     required: false
 jobs:
-  
+  # define-build-mode:
+  # runs-on: ubuntu-latest
+  # outputs: 
+  #   build-mode: ${{ steps.modes.outputs.build-mode }}
+  # steps:
+  #   - name: Define build mode
+  #     id: modes
+  #     run: |
+  #       echo 'build-mode=["shared", "static"]' >> "$GITHUB_OUTPUT"
+
   build:
     name: buil libclang    
     strategy:
       matrix:
         buildmode: [shared, static]
     runs-on: ${{ inputs.runs-on }}
-    outputs:
-      build-mode: ${{ steps.mode.outputs.build-mode }}
+
       
     steps:
-      - name: current build mode
-        id: mode
-        run: |
-          echo "build-mode=${{ matrix.buildmode }}" >> $GITHUB_OUTPUT
 
       - name: check out 
         uses: actions/checkout@v4   
 
+      - name: build
+        shell: cmd
+        run: |
+          cmake -v
 
+      # - name: Checkout llvm
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: 'llvm/llvm-project'
+      #     ref: 'llvmorg-${{ inputs.llvm-version }}'
       # - name: Checkout openssl
       #   uses: actions/checkout@v4
       #   with:
@@ -98,8 +111,8 @@ jobs:
         shell: cmd
         run: |
           echo "llvm-version=${{ inputs.llvm-version }}"
-          echo "build mode = ${{ needs.build.ouputs.build-mode}}"
-          echo "M:build mode = ${{ needs.build.matrix.buildmode}}"
+          # echo "build mode = ${{ needs.build.ouputs.build-mode}}"
+
 
 
       # - shell: cmd
