@@ -5,7 +5,7 @@ permissions:
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 jobs:
   versions_config:
@@ -58,7 +58,7 @@ jobs:
           echo "build-date=${{ needs.versions_config.outputs.build-date }}"
 
   build-openssl:
-    name: Build openssl
+    name: build openssl
     needs:
       - versions_config
       - check-versions
@@ -66,36 +66,36 @@ jobs:
       fail-fast: false
       matrix:
         runs-on:
-          - windows-2022           
+          - windows-2022
 
-      uses: ./.github/workflows/build_openssl.yml
-      with:
-        openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
-        mingw: ${{ needs.versions_config.outputs.mingw-version }}
-        install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
-        build-date: ${{ needs.versions_config.outputs.build-date }}
-        qt-version: ${{ needs.versions_config.outputs.qt-version }}
-        upload: true
-        runs-on: ${{ matrix.runs-on }}
-      
-  # build-clang:     
-  #   name: Build clang
-  #   needs:
-  #     - versions_config
-  #     - check-versions
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       runs-on:
-  #         - windows-2022        
-  #       uses: ./.github/workflows/build_libclang.yml
-  #       with:
-  #         llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
-  #         mingw: ${{ needs.versions_config.outputs.mingw-version }}
-  #         install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
-  #         build-date: ${{ needs.versions_config.outputs.build-date }}
-  #         upload: true
-  #         runs-on: ${{ matrix.runs-on }}    
+    uses: ./.github/workflows/build_openssl.yml
+    with:
+      openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
+      mingw: ${{ needs.versions_config.outputs.mingw-version }}
+      install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
+      build-date: ${{ needs.versions_config.outputs.build-date }}
+      qt-version: ${{ needs.versions_config.outputs.qt-version }}
+      upload: true
+      runs-on: ${{ matrix.runs-on }}
+
+  build-libclang:
+    name: build libclang
+    needs:
+      - versions_config
+      - check-versions
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - windows-2022     
+    uses: ./.github/workflows/build_libclang.yml
+    with:
+      llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
+      mingw: ${{ needs.versions_config.outputs.mingw-version }}
+      install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
+      build-date: ${{ needs.versions_config.outputs.build-date }}
+      upload: true
+      runs-on: ${{ matrix.runs-on }}    
     
     # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.
     # secrets:

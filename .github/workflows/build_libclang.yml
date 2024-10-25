@@ -179,10 +179,10 @@ jobs:
               -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build            
           )
 
-          # @REM : 编译
-          # cmake --build build --parallel 
-          # @REM : 安装
-          # cmake --build build --parallel --target install  
+          @REM : 编译
+          cmake --build build --parallel 
+          @REM : 安装
+          cmake --build build --parallel --target install  
 
           
           MKDIR %CLANG_INSTALL_PREFIX%
