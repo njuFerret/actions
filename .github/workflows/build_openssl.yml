@@ -108,8 +108,7 @@ jobs:
         run: |
            set mingw=${{ inputs.mingw }}
            set QT_INSTALL_PREFIX=${{ inputs.install-prefix }}\Qt\${{ inputs.qt-version }}
-           set START=%CD%      
-           echo %QT_INSTALL_PREFIX%
+           set START=%CD%                 
            # 第一个参数为Qt版本, 第二个参数开始为路径如MinGW\bin
            python ./utils/msys2_mod.py %QT_INSTALL_PREFIX% %START%\MinGW\bin
            curl -L -o  %mingw%.7z  https://github.com/njuFerret/qt6_mingw_build/releases/download/deps/%mingw%.7z
@@ -126,7 +125,7 @@ jobs:
           # g++ -v        
           echo QT_ROOT=$QT_ROOT  
           cd openssl 
-          # ls -l          
+          ls -l          
           ./config --prefix=$QT_ROOT/3rdParty/openssl          
           echo ---------------------patch Makefile------------------
           # 注意！注意！注意！
