@@ -1,7 +1,4 @@
 import pathlib
-
-# import shutil
-import winreg
 import sys
 
 root = pathlib.Path(__file__).parent
