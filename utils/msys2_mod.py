@@ -6,7 +6,7 @@ import sys
 
 root = pathlib.Path(__file__).parent
 
-qt_ver = sys.argv[1]
+qt_install_prefix = sys.argv[1]
 pathes = sys.argv[2:]
 
 
@@ -24,10 +24,18 @@ def add_path_env(content, argvs):
     return "\n".join(new)
 
 
-def add_path_qt(content, qp_version):
+def add_path_qt(content, qt_install_prefix):
     old = content.splitlines()
-    new = old[:-1] + [f'set QT_ROOT=/D/Dev/Qt/{qp_version}'] + old[-1:]
+    new = old[:-1] + [f'set QT_ROOT={qt_install_prefix}'] + old[-1:]
     return "\n".join(new)
+
+
+def winpath_2_msyspath(path):
+    if not path:
+        return path
+    path = pathlib.Path(path).as_posix()
+    path = '/' + "".join(path.split(':'))
+    return path
 
 
 def modify_msys_cmd_file(msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD'):
@@ -40,7 +48,8 @@ def modify_msys_cmd_file(msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD'):
     content = msys_cmd_file.open('r', encoding='utf-8').read().replace('minimal', "inherit").strip()
 
     content = add_path_env(content, pathes)
-    content = add_path_qt(content, qt_ver)
+    qt_install_prefix = winpath_2_msyspath(qt_install_prefix)
+    content = add_path_qt(content, qt_install_prefix)
 
     with msys_cmd_file.open('w', encoding='utf-8') as f:
         f.write(content)
