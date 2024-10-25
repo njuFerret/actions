@@ -33,7 +33,7 @@ def winpath_2_msyspath(path):
 
 
 def modify_msys_cmd_file(pathes, qt_install_prefix, msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD'):
-    print(pathes)
+    # print(pathes)
     msys_cmd_file = pathlib.Path(msys_cmd_file)
 
     if not msys_cmd_file.exists():
@@ -50,7 +50,10 @@ def modify_msys_cmd_file(pathes, qt_install_prefix, msys_cmd_file=r'D:\a\_temp\s
 
     with msys_cmd_file.open('w', encoding='utf-8') as f:
         f.write(content)
-    print(content)
+    print('-----------------------------msys2 start script start--------------------------')
+    for line in content.splitlines():
+        print(f'  > {line}')
+    print('----------------------------- msys2 start script end --------------------------')
 
 
 modify_msys_cmd_file(qt_install_prefix=sys.argv[1], pathes=sys.argv[2:])

@@ -69,23 +69,24 @@ jobs:
           - windows-2022
            
 
-    uses: ./.github/workflows/build_openssl.yml
+    # uses: ./.github/workflows/build_openssl.yml
+    # with:
+    #   openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
+    #   mingw: ${{ needs.versions_config.outputs.mingw-version }}
+    #   install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
+    #   build-date: ${{ needs.versions_config.outputs.build-date }}
+    #   qt-version: ${{ needs.versions_config.outputs.qt-version }}
+    #   upload: true
+    #   runs-on: ${{ matrix.runs-on }}
+      
+    uses: ./.github/workflows/build_libclang.yml
     with:
-      openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
+      llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
       mingw: ${{ needs.versions_config.outputs.mingw-version }}
       install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
       build-date: ${{ needs.versions_config.outputs.build-date }}
-      qt-version: ${{ needs.versions_config.outputs.qt-version }}
       upload: true
-      runs-on: ${{ matrix.runs-on }}
-      
-    # uses: ./.github/workflows/build_libclang.yml
-    # with:
-    #   llvm-version: ${{ needs.versions_config.outputs.llvm-version }}
-    #   mingw: ${{ needs.versions_config.outputs.mingw-version }}
-    #   build-date: ${{ needs.versions_config.outputs.build-date }}
-    #   upload: true
-    #   runs-on: ${{ matrix.runs-on }}    
+      runs-on: ${{ matrix.runs-on }}    
     
     # Called workflows don't have access to secrets by default, so we need to explicitly pass secrets that we use.
     # secrets:
