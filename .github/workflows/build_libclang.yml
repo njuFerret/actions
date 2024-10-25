@@ -132,12 +132,12 @@ jobs:
           )
           
 
-      - name: Checkout llvm
-        uses: actions/checkout@v4
-        with:
-          repository: 'llvm/llvm-project'
-          ref: 'llvmorg-${{ inputs.llvm-version }}'
-          path: llvm-project
+      # - name: Checkout llvm
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: 'llvm/llvm-project'
+      #     ref: 'llvmorg-${{ inputs.llvm-version }}'
+      #     path: llvm-project
 
       - name: config environment and build
         shell: cmd
@@ -203,7 +203,7 @@ jobs:
       - name: upload libclang-${{ inputs.llvm-version }} binaries
         uses:  actions/upload-artifact@v4.4.3
         with:
-          name: 'build-${{ matrix.buildmode}}'
+          name: 'libclang-build-${{ matrix.buildmode}}'
           path: ./libclang-${{ inputs.llvm-version }}_${{ inputs.mingw }}_${{ matrix.buildmode}}.7z
 
 
@@ -216,17 +216,18 @@ jobs:
 
     steps:
     - name: Download libclang
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v4.1.8
       with:          
-        name: 'build-*'          
+        # name: 'build-*'          
         merge-multiple: true
-        path: ./
+        # path: ./
+        pattern: 'libclang-build-*'
 
     - name: Unzip libclang
       shell: bash
       run: |
         ls -l   
-        7z x libclang-${{ inputs.llvm-version }}_%mingw%_static.7z
+        7z x libclang-${{ inputs.llvm-version }}_${{ inputs.mingw }}_static.7z
         ls -l
         ls -l openssl 
 
