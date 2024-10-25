@@ -22,6 +22,7 @@ on:
       qt-version:
         description: 'qt Version'
         required: false
+        default: '6.8.0'
         type: string             
       upload:
         description: 'Upload binaries to the release page'
@@ -58,7 +59,8 @@ on:
       qt-version:
         description: 'qt Version'
         required: false
-        type: string                     
+        default: '6.8.0'
+        type: string                      
       upload:
         description: 'Upload binaries to the release page'
         required: true

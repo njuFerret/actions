@@ -73,9 +73,9 @@ jobs:
     with:
       openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
       mingw: ${{ needs.versions_config.outputs.mingw-version }}
-      qt-version: ${{ needs.versions_config.outputs.qt-version }}
       install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
       build-date: ${{ needs.versions_config.outputs.build-date }}
+      qt-version: ${{ needs.versions_config.outputs.qt-version }}
       upload: true
       runs-on: ${{ matrix.runs-on }}
       

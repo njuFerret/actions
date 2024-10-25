@@ -4,11 +4,11 @@ import sys
 root = pathlib.Path(__file__).parent
 
 
-def add_path_env(content, argvs):
+def add_path_env(content, pathes):
     pth = []
     pth.append(r'C:\Windows')
     pth.append(r'C:\Windows\System32')
-    for path in argvs:
+    for path in pathes:
         pth.append(path)
 
     pth = [p for p in pth if p.strip()]
@@ -32,8 +32,10 @@ def winpath_2_msyspath(path):
     return path
 
 
-def modify_msys_cmd_file(msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD', qt_install_prefix="", pathes=[]):
+def modify_msys_cmd_file(pathes, qt_install_prefix, msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD'):
+    print(pathes)
     msys_cmd_file = pathlib.Path(msys_cmd_file)
+
     if not msys_cmd_file.exists():
         print(f' >  {msys_cmd_file} not exists')
         return
@@ -42,7 +44,7 @@ def modify_msys_cmd_file(msys_cmd_file=r'D:\a\_temp\setup-msys2\msys2.CMD', qt_i
     content = msys_cmd_file.open('r', encoding='utf-8').read().replace('minimal', "inherit").strip()
 
     content = add_path_env(content, pathes)
-    print(qt_install_prefix)
+
     qt_install_prefix = winpath_2_msyspath(qt_install_prefix)
     content = add_path_qt(content, qt_install_prefix)
 
