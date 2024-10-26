@@ -132,12 +132,12 @@ jobs:
           )
           
 
-      # - name: Checkout llvm
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: 'llvm/llvm-project'
-      #     ref: 'llvmorg-${{ inputs.llvm-version }}'
-      #     path: llvm-project
+      - name: Checkout llvm
+        uses: actions/checkout@v4
+        with:
+          repository: 'llvm/llvm-project'
+          ref: 'llvmorg-${{ inputs.llvm-version }}'
+          path: llvm-project
 
       - name: config environment and build
         shell: cmd
@@ -155,34 +155,34 @@ jobs:
           ninja --version 
           echo -------------------- test end --------------------------
 
-          # cd llvm-project
-          # curl -L -o clean_llvm_platform.patch https://github.com/njuFerret/qt6_mingw_build/releases/download/deps/clean_llvm_platform.patch
-          # curl -L -o fix_shared_build.patch https://github.com/njuFerret/qt6_mingw_build/releases/download/deps/fix_shared_build.patch
+          cd llvm-project
+          curl -L -o clean_llvm_platform.patch https://github.com/njuFerret/qt6_mingw_build/releases/download/deps/clean_llvm_platform.patch
+          curl -L -o fix_shared_build.patch https://github.com/njuFerret/qt6_mingw_build/releases/download/deps/fix_shared_build.patch
 
-          # echo ******************** remove platform except 'X86' **********************
-          # git apply clean_llvm_platform.patch 
-          # git diff --stat
+          echo ******************** remove platform except 'X86' **********************
+          git apply clean_llvm_platform.patch 
+          git diff --stat
 
-          # if "${{matrix.buildmode}}"=="static" (
-          #   cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer -DBUILD_SHARED_LIBS:BOOL=OFF^
-          #     -DLIBCLANG_BUILD_STATIC:BOOL=ON -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
-          #     -DCMAKE_BUILD_TYPE=Release^
-          #     -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build
-          # ) else if "${{matrix.buildmode}}"=="shared" (
-          #   echo **********   turn off test module in  clang-tools-extra *****************    
-          #   git apply fix_shared_build.patch
-          #   echo **********************  check patch is applied **************************
-          #   git diff --stat    
-          #   cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer ^
-          #     -DBUILD_SHARED_LIBS:BOOL=ON -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
-          #     -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra -DCMAKE_BUILD_TYPE=Release ^
-          #     -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build            
-          # )
+          if "${{matrix.buildmode}}"=="static" (
+            cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer -DBUILD_SHARED_LIBS:BOOL=OFF^
+              -DLIBCLANG_BUILD_STATIC:BOOL=ON -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
+              -DCMAKE_BUILD_TYPE=Release^
+              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build
+          ) else if "${{matrix.buildmode}}"=="shared" (
+            echo **********   turn off test module in  clang-tools-extra *****************    
+            git apply fix_shared_build.patch
+            echo **********************  check patch is applied **************************
+            git diff --stat    
+            cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer ^
+              -DBUILD_SHARED_LIBS:BOOL=ON -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
+              -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra -DCMAKE_BUILD_TYPE=Release ^
+              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build            
+          )
 
-          # @REM : 编译
-          # cmake --build build --parallel 
-          # @REM : 安装
-          # cmake --build build --parallel --target install  
+          @REM : 编译
+          cmake --build build --parallel 
+          @REM : 安装
+          cmake --build build --parallel --target install  
 
           
           MKDIR %CLANG_INSTALL_PREFIX%
