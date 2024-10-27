@@ -169,7 +169,7 @@ jobs:
           if "${{matrix.buildmode}}"=="static" (
             cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer -DBUILD_SHARED_LIBS:BOOL=OFF^
               -DLIBCLANG_BUILD_STATIC:BOOL=ON -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
-              -DCMAKE_BUILD_TYPE=Release -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS:BOOL=ON^
+              -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_RTTI:BOOL=ON -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS:BOOL=ON^
               -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build
           ) else if "${{matrix.buildmode}}"=="shared" (
             echo **********   turn off test module in  clang-tools-extra *****************    
@@ -178,7 +178,7 @@ jobs:
             git diff --stat    
             cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer ^
               -DBUILD_SHARED_LIBS:BOOL=ON -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF -DCMAKE_BUILD_TYPE=Release^
-              -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
+              -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra -DLLVM_ENABLE_RTTI:BOOL=ON^
               -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% -S./llvm -B./build            
           )
 
