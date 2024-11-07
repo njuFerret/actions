@@ -160,8 +160,6 @@ jobs:
           echo "" >> $doc
           
 
-
-        
           
       - name: 7ziped openssl folder
         shell: cmd
