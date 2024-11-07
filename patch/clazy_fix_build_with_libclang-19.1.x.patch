@@ -1,0 +1,99 @@
+diff --git a/src/ContextUtils.cpp b/src/ContextUtils.cpp
+index f30c4cb6..0043b44b 100644
+--- a/src/ContextUtils.cpp
++++ b/src/ContextUtils.cpp
+@@ -81,7 +81,9 @@ std::string clazy::getMostNeededQualifiedName(const SourceManager &sourceManager
+                 continue;
+             }
+ 
+-            visibleContexts.push_back(ns->getOriginalNamespace());
++            // visibleContexts.push_back(ns->getOriginalNamespace());
++            // Since libclang 19.1.0 `getOriginalNamespace` function is removed.
++            visibleContexts.push_back(ns->getFirstDecl());
+         }
+     }
+ 
+diff --git a/src/PreProcessorVisitor.cpp b/src/PreProcessorVisitor.cpp
+index 8687ef5d..b16eeca7 100644
+--- a/src/PreProcessorVisitor.cpp
++++ b/src/PreProcessorVisitor.cpp
+@@ -184,6 +184,7 @@ void PreProcessorVisitor::InclusionDirective(clang::SourceLocation,
+                                              clang::StringRef,
+                                              clang::StringRef,
+                                              const clang::Module *,
++                                             bool 	ModuleImported,
+                                              clang::SrcMgr::CharacteristicKind)
+ {
+     if (m_ci.getPreprocessor().isInPrimaryFile() && !clazy::endsWith(FileName.str(), ".moc")) {
+diff --git a/src/PreProcessorVisitor.h b/src/PreProcessorVisitor.h
+index 10f32066..a0718c47 100644
+--- a/src/PreProcessorVisitor.h
++++ b/src/PreProcessorVisitor.h
+@@ -69,6 +69,7 @@ protected:
+                             clang::StringRef SearchPath,
+                             clang::StringRef RelativePath,
+                             const clang::Module *Imported,
++                            bool ModuleImported,
+                             clang::SrcMgr::CharacteristicKind FileType) override;
+ 
+ private:
+diff --git a/src/checkbase.cpp b/src/checkbase.cpp
+index 1fef0c96..a26f80bb 100644
+--- a/src/checkbase.cpp
++++ b/src/checkbase.cpp
+@@ -96,6 +96,7 @@ void ClazyPreprocessorCallbacks::InclusionDirective(clang::SourceLocation HashLo
+                                                     clang::StringRef SearchPath,
+                                                     clang::StringRef RelativePath,
+                                                     const clang::Module *Imported,
++                                                    bool 	ModuleImported,
+                                                     clang::SrcMgr::CharacteristicKind FileType)
+ {
+     check->VisitInclusionDirective(HashLoc, IncludeTok, FileName, IsAngled, FilenameRange, File, SearchPath, RelativePath, Imported, FileType);
+diff --git a/src/checkbase.h b/src/checkbase.h
+index 1088ea94..1885b044 100644
+--- a/src/checkbase.h
++++ b/src/checkbase.h
+@@ -97,6 +97,7 @@ public:
+                             clang::StringRef SearchPath,
+                             clang::StringRef RelativePath,
+                             const clang::Module *Imported,
++                            bool ModuleImported,
+                             clang::SrcMgr::CharacteristicKind FileType) override;
+ 
+ private:
+diff --git a/src/checks/level0/qcolor-from-literal.cpp b/src/checks/level0/qcolor-from-literal.cpp
+index c9370e86..1b6d29f0 100644
+--- a/src/checks/level0/qcolor-from-literal.cpp
++++ b/src/checks/level0/qcolor-from-literal.cpp
+@@ -48,7 +48,7 @@ static bool isQuadrupleDigitRgb(llvm::StringRef ref)
+ 
+ static bool isStringColorLiteralPattern(StringRef str)
+ {
+-    if (!str.startswith("#")) {
++    if (!str.starts_with("#")) {
+         return false;
+     }
+     return isSingleDigitRgb(str) || isDoubleDigitRgb(str) || isDoubleDigitRgba(str) || isTripleDigitRgb(str) || isQuadrupleDigitRgb(str);
+@@ -76,7 +76,7 @@ public:
+         }
+ 
+         llvm::StringRef str = lt->getString();
+-        if (!str.startswith("#")) {
++        if (!str.starts_with("#")) {
+             return;
+         }
+ 
+diff --git a/src/checks/manuallevel/qt6-deprecated-api-fixes.cpp b/src/checks/manuallevel/qt6-deprecated-api-fixes.cpp
+index e963c20f..f8bfe476 100644
+--- a/src/checks/manuallevel/qt6-deprecated-api-fixes.cpp
++++ b/src/checks/manuallevel/qt6-deprecated-api-fixes.cpp
+@@ -491,7 +491,8 @@ void Qt6DeprecatedAPIFixes::fixForDeprecatedOperator(Stmt *stmt, const std::stri
+             }
+             auto *uni = dyn_cast<UnaryOperator>(child);
+             if (uni) {
+-                if (clang::UnaryOperator::getOpcodeStr(uni->getOpcode()).equals("*")) {
++                //if (clang::UnaryOperator::getOpcodeStr(uni->getOpcode()).equals("*")) {
++                if (clang::UnaryOperator::getOpcodeStr(uni->getOpcode()).equals_insensitive("*")) {
+                     isPointer = true;
+                 }
+             }

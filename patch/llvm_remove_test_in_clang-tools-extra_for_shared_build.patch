@@ -1,0 +1,12 @@
+diff --git a/clang-tools-extra/CMakeLists.txt b/clang-tools-extra/CMakeLists.txt
+index f6a6b57b5ef0..ffaf31436e79 100644
+--- a/clang-tools-extra/CMakeLists.txt
++++ b/clang-tools-extra/CMakeLists.txt
+@@ -45,7 +45,6 @@ endif()
+ 
+ # Add the common testsuite after all the tools.
+ if(CLANG_INCLUDE_TESTS)
+-  add_subdirectory(test)
+   add_subdirectory(unittests)
+   umbrella_lit_testsuite_end(check-clang-tools)
+ endif()

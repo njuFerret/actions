@@ -1,0 +1,58 @@
+diff --git a/llvm/CMakeLists.txt b/llvm/CMakeLists.txt
+index 741c95f3a7d0..e05846fabbb1 100644
+--- a/llvm/CMakeLists.txt
++++ b/llvm/CMakeLists.txt
+@@ -480,25 +480,25 @@ set(LLVM_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
+ 
+ # List of all targets to be built by default:
+ set(LLVM_ALL_TARGETS
+-  AArch64
+-  AMDGPU
+-  ARM
+-  AVR
+-  BPF
+-  Hexagon
+-  Lanai
+-  LoongArch
+-  Mips
+-  MSP430
+-  NVPTX
+-  PowerPC
+-  RISCV
+-  Sparc
+-  SystemZ
+-  VE
+-  WebAssembly
++#  AArch64
++#  AMDGPU
++#  ARM
++#  AVR
++#  BPF
++#  Hexagon
++#  Lanai
++#  LoongArch
++#  Mips
++#  MSP430
++#  NVPTX
++#  PowerPC
++#  RISCV
++#  Sparc
++#  SystemZ
++#  VE
++#  WebAssembly
+   X86
+-  XCore
++#  XCore
+   )
+ 
+ set(LLVM_ALL_EXPERIMENTAL_TARGETS
+@@ -511,7 +511,8 @@ set(LLVM_ALL_EXPERIMENTAL_TARGETS
+ )
+ 
+ # List of targets with JIT support:
+-set(LLVM_TARGETS_WITH_JIT X86 PowerPC AArch64 ARM Mips SystemZ)
++# set(LLVM_TARGETS_WITH_JIT X86 PowerPC AArch64 ARM Mips SystemZ)
++set(LLVM_TARGETS_WITH_JIT X86)
+ 
+ set(LLVM_TARGETS_TO_BUILD "all"
+     CACHE STRING "Semicolon-separated list of targets to build, or \"all\".")
