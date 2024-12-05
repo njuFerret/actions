@@ -172,6 +172,7 @@ jobs:
           if "${{matrix.buildmode}}"=="static" (
             cmake -GNinja -Wno-dev -Wno-deprecated -Wno-dangling-pointer ^
               -DBUILD_SHARED_LIBS:BOOL=OFF ^
+              -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
               -DLIBCLANG_BUILD_STATIC:BOOL=ON ^
               -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
               -DCMAKE_BUILD_TYPE=Release ^
