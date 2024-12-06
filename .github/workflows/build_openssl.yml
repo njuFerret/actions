@@ -204,7 +204,8 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: "*.7z"
-        tag_name: build_${{ inputs.build-date }}
+        tag_name: openssl-${{ inputs.openssl-version }}
+        
 
 
 
