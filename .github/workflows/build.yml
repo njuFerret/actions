@@ -57,26 +57,26 @@ jobs:
           # echo "cmake=${{ needs.versions_config.outputs.cmake-version }}"
           echo "build-date=${{ needs.versions_config.outputs.build-date }}"
 
-  build-openssl:
-    name: build openssl
-    needs:
-      - versions_config
-      - check-versions
-    strategy:
-      fail-fast: false
-      matrix:
-        runs-on:
-          - windows-2022
+  # build-openssl:
+  #   name: build openssl
+  #   needs:
+  #     - versions_config
+  #     - check-versions
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       runs-on:
+  #         - windows-2022
 
-    uses: ./.github/workflows/build_openssl.yml
-    with:
-      openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
-      mingw: ${{ needs.versions_config.outputs.mingw-version }}
-      install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
-      build-date: ${{ needs.versions_config.outputs.build-date }}
-      qt-version: ${{ needs.versions_config.outputs.qt-version }}
-      upload: true
-      runs-on: ${{ matrix.runs-on }}
+  #   uses: ./.github/workflows/build_openssl.yml
+  #   with:
+  #     openssl-version: ${{ needs.versions_config.outputs.openssl-version }}
+  #     mingw: ${{ needs.versions_config.outputs.mingw-version }}
+  #     install-prefix: ${{ needs.versions_config.outputs.install-prefix }}
+  #     build-date: ${{ needs.versions_config.outputs.build-date }}
+  #     qt-version: ${{ needs.versions_config.outputs.qt-version }}
+  #     upload: true
+  #     runs-on: ${{ matrix.runs-on }}
 
   build-libclang:
     name: build libclang

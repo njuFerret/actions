@@ -93,7 +93,7 @@ jobs:
       matrix:
         buildmode: 
         - shared
-        - static
+        # - static
     runs-on: ${{ inputs.runs-on }}
       
     steps:
@@ -163,9 +163,9 @@ jobs:
           @REM # curl -L -o clean_llvm_platform.patch https://github.com/njuFeradret/actions/releases/download/deps/clean_llvm_platform.patch
           @REM # curl -L -o fix_shared_build.patch https://github.com/njuFerret/actions/releases/download/deps/fix_shared_build.patch
 
-          echo ******************** remove platform except 'X86' **********************
-          git apply ../patch/llvm_remove_unused_platform.patch 
-          git diff --stat
+          ::@REM echo ******************** remove platform except 'X86' **********************
+          ::@REM git apply ../patch/llvm_remove_unused_platform.patch 
+          ::@REM git diff --stat
 
           @REM # 在构建 LLVM 时，请务必将 -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS=ON 传递给 CMake,否则 clazy 将不起作用。
           @REM # 动态库不要使用: BUILD_SHARED_LIBS not compatible with LLVM_EXPORT_SYMBOLS_FOR_PLUGINS
@@ -186,20 +186,33 @@ jobs:
               -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
               -S./llvm -B./build
           ) else if "${{matrix.buildmode}}"=="shared" (
-            echo **********   turn off test module in  clang-tools-extra *****************    
-            git apply ../patch/llvm_remove_test_in_clang-tools-extra_for_shared_build.patch
-            echo **********************  check patch is applied **************************
-            git diff --stat    
+            @REM :: echo **********   turn off test module in  clang-tools-extra *****************    
+            @REM :: git apply ../patch/llvm_remove_test_in_clang-tools-extra_for_shared_build.patch
+            @REM :: echo **********************  check patch is applied **************************
+            @REM :: git diff --stat    
+            :: cmake -GNinja -Wno-dev -Wno-deprecated ^
+            ::   -DBUILD_SHARED_LIBS:BOOL=ON ^
+            ::   -DLLVM_TARGETS_TO_BUILD:STRING=X86 ^
+            ::   -DCMAKE_CXX_FLAGS="-Wno-dangling-reference -Wno-unknown-pragmas -Wno-missing-field-initializers -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion "^
+            ::   -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
+            ::   -DCMAKE_BUILD_TYPE=Release ^
+            ::   -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
+            ::   -DLLVM_ENABLE_RTTI:BOOL=ON ^
+            ::   -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
+            ::   -S./llvm -B./build    
             cmake -GNinja -Wno-dev -Wno-deprecated ^
-              -DBUILD_SHARED_LIBS:BOOL=ON ^
-              -DLLVM_TARGETS_TO_BUILD:STRING=X86 ^
-              -DCMAKE_CXX_FLAGS="-Wno-dangling-reference -Wno-unknown-pragmas -Wno-missing-field-initializers -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion "^
-              -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
-              -DCMAKE_BUILD_TYPE=Release ^
-              -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
-              -DLLVM_ENABLE_RTTI:BOOL=ON ^
-              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
-              -S./llvm -B./build            
+                -DBUILD_SHARED_LIBS=OFF ^
+                -DLLVM_BUILD_LLVM_DYLIB=ON ^
+                -DLLVM_LINK_LLVM_DYLIB=ON ^
+                -DLLVM_ENABLE_EH=ON ^
+                -DLLVM_ENABLE_RTTI=ON ^
+                -DLLVM_TARGETS_TO_BUILD=X86 ^
+                -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
+                -DCLANG_LINK_CLANG_DYLIB=ON ^
+                -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS=OFF ^
+                -DCMAKE_BUILD_TYPE=Release ^
+                -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
+                -S ./llvm -B ./build        
           )
 
           @REM : 编译
