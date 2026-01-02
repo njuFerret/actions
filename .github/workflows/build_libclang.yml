@@ -93,7 +93,7 @@ jobs:
       matrix:
         buildmode: 
         - shared
-        # - static
+        - static
     runs-on: ${{ inputs.runs-on }}
       
     steps:
@@ -190,29 +190,18 @@ jobs:
             @REM :: git apply ../patch/llvm_remove_test_in_clang-tools-extra_for_shared_build.patch
             @REM :: echo **********************  check patch is applied **************************
             @REM :: git diff --stat    
-            :: cmake -GNinja -Wno-dev -Wno-deprecated ^
-            ::   -DBUILD_SHARED_LIBS:BOOL=ON ^
-            ::   -DLLVM_TARGETS_TO_BUILD:STRING=X86 ^
-            ::   -DCMAKE_CXX_FLAGS="-Wno-dangling-reference -Wno-unknown-pragmas -Wno-missing-field-initializers -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion "^
-            ::   -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
-            ::   -DCMAKE_BUILD_TYPE=Release ^
-            ::   -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
-            ::   -DLLVM_ENABLE_RTTI:BOOL=ON ^
-            ::   -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
-            ::   -S./llvm -B./build    
             cmake -GNinja -Wno-dev -Wno-deprecated ^
-                -DBUILD_SHARED_LIBS=OFF ^
-                -DLLVM_BUILD_LLVM_DYLIB=ON ^
-                -DLLVM_LINK_LLVM_DYLIB=ON ^
-                -DLLVM_ENABLE_EH=ON ^
-                -DLLVM_ENABLE_RTTI=ON ^
-                -DLLVM_TARGETS_TO_BUILD=X86 ^
-                -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
-                -DCLANG_LINK_CLANG_DYLIB=ON ^
-                -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS=OFF ^
-                -DCMAKE_BUILD_TYPE=Release ^
-                -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
-                -S ./llvm -B ./build        
+              -DBUILD_SHARED_LIBS:BOOL=ON ^
+              -DLLVM_ENABLE_EH=ON ^
+              -DLLVM_TARGETS_TO_BUILD:STRING=X86 ^
+              -DCMAKE_CXX_FLAGS="-Wno-dangling-reference -Wno-unknown-pragmas -Wno-missing-field-initializers -Wno-deprecated-declarations -Wno-deprecated-enum-enum-conversion "^
+              -DCLANG_TOOLS_EXTRA_INCLUDE_DOCS:BOOL=OFF ^
+              -DCMAKE_BUILD_TYPE=Release ^
+              -DLLVM_ENABLE_PROJECTS=clang;clang-tools-extra ^
+              -DLLVM_ENABLE_RTTI:BOOL=ON ^
+              -DCMAKE_INSTALL_PREFIX=%CLANG_INSTALL_PREFIX% ^
+              -S./llvm -B./build    
+   
           )
 
           @REM : 编译
